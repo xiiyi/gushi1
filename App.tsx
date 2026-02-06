@@ -17,16 +17,14 @@ const App: React.FC = () => {
   const currentNode = SCENES[currentNodeId];
 
   useEffect(() => {
-    // Reset transition effect when node changes
     setIsTransitioning(true);
-    const timer = setTimeout(() => setIsTransitioning(false), 500);
+    const timer = setTimeout(() => setIsTransitioning(false), 800);
     return () => clearTimeout(timer);
   }, [currentNodeId]);
 
   const handleChoice = async (choice: Choice) => {
     const nextId = choice.nextNode;
-    
-    // Store history
+
     const newHistory = { ...history, [currentNodeId]: choice.id };
     setHistory(newHistory);
 
@@ -51,68 +49,74 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#f4f1ea] relative select-none">
-      {/* Texture Overlay for Paper Feel */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/papyros.png')] z-10"></div>
+    <div className="h-screen w-screen flex flex-col relative overflow-hidden select-none">
 
-      {/* Header */}
-      <header className="h-[10%] bg-[#e0d8c3] border-b border-[#5d4037]/20 flex items-center justify-between px-8 z-20 shadow-sm">
-        <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-title text-[#3e2723] tracking-wider">《四时田园杂兴》</h1>
-          <span className="text-sm text-[#795548] font-cursive mt-2 hidden md:inline">—— 南宋 · 范成大</span>
+      {/* Full-Screen Background Image */}
+      <div
+        className={`absolute inset-0 transition-all duration-1000 ${isTransitioning ? 'scale-110 opacity-0' : 'scale-100 opacity-100'}`}
+      >
+        <img
+          src={currentNode.image}
+          alt={currentNode.title}
+          className="w-full h-full object-cover"
+        />
+        {/* Dark Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60"></div>
+        {/* Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.5)_100%)]"></div>
+      </div>
+
+      {/* Paper Texture */}
+      <div className="absolute inset-0 pointer-events-none opacity-10 bg-[url('https://www.transparenttextures.com/patterns/papyros.png')] z-10"></div>
+
+      {/* Floating Header */}
+      <header className="relative z-30 flex items-center justify-between px-4 md:px-10 py-3 md:py-4">
+        <div className="flex items-center gap-3 bg-black/40 backdrop-blur-md px-4 md:px-6 py-2 md:py-3 rounded-full border border-white/10 shadow-2xl">
+          <h1 className="text-xl md:text-3xl lg:text-4xl font-title text-white tracking-wider drop-shadow-lg">《四时田园杂兴》</h1>
+          <span className="text-xs md:text-base text-white/80 font-cursive hidden md:inline">—— 南宋 · 范成大</span>
         </div>
-        <button 
+        <button
           onClick={() => setIsVocabOpen(true)}
-          className="px-6 py-2 bg-[#5d4037] text-[#f4f1ea] rounded-full hover:bg-[#3e2723] transition-colors shadow-lg font-bold"
+          className="px-4 md:px-6 py-2 md:py-3 bg-white/20 backdrop-blur-md text-white rounded-full hover:bg-white/30 transition-all shadow-xl border border-white/20 font-bold text-sm md:text-lg hover:scale-105"
         >
-          生字本
+          📖 生字本
         </button>
       </header>
 
-      {/* Main Scene Area */}
-      <main className="h-[70%] relative flex flex-col items-center justify-center p-6 overflow-hidden">
-        <div className={`w-full max-w-5xl h-full flex flex-col items-center transition-opacity duration-1000 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-          
-          {/* Image Container with Ink Frame */}
-          <div className="relative w-full h-[65%] rounded-lg overflow-hidden border-8 border-white shadow-2xl mb-6">
-            <img 
-              src={currentNode.image} 
-              alt={currentNode.title}
-              className="w-full h-full object-cover grayscale-[0.2] sepia-[0.2] hover:scale-105 transition-transform duration-[10s] ease-linear"
-            />
-            {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-            
-            {/* Title Overlay */}
-            <div className="absolute top-6 left-6 bg-white/90 px-4 py-2 border-l-4 border-[#5d4037]">
-              <h2 className="text-2xl font-bold text-[#3e2723]">{currentNode.title}</h2>
-            </div>
+      {/* Main Content - Flexbox Layout */}
+      <main className="relative z-20 flex-1 flex flex-col items-center justify-center px-4 md:px-8 py-4 overflow-hidden">
 
-            {/* Poem Snippet Overlay */}
-            {currentNode.poemSnippet && (
-              <div className="absolute bottom-6 right-6 writing-vertical bg-white/80 p-4 border border-[#5d4037]/20 shadow-lg">
-                <p className="text-xl font-cursive leading-relaxed tracking-widest text-[#3e2723]">
-                  {currentNode.poemSnippet}
+        <div className={`w-full max-w-4xl transition-all duration-700 ${isTransitioning ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'}`}>
+
+          {/* Title Card */}
+          <div className="text-center mb-4 md:mb-6">
+            <div className="inline-block bg-black/50 backdrop-blur-xl px-6 md:px-10 py-3 md:py-5 rounded-2xl border border-white/20 shadow-2xl">
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white tracking-widest drop-shadow-lg">
+                {currentNode.title}
+              </h2>
+              {currentNode.poemSnippet && (
+                <p className="text-lg md:text-xl lg:text-2xl font-cursive text-amber-200/90 tracking-wider mt-2">
+                  「{currentNode.poemSnippet}」
                 </p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Scenario Text */}
-          <div className="w-full bg-white/40 p-6 rounded-lg backdrop-blur-sm border border-[#5d4037]/10 flex-1 overflow-y-auto">
+          <div className="bg-black/40 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-8 border border-white/10 shadow-2xl mx-auto max-w-3xl">
             {currentNodeId === NodeId.END && isLoadingReflection ? (
-              <div className="flex flex-col items-center justify-center h-full space-y-4">
-                <div className="w-12 h-12 border-4 border-[#5d4037] border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-[#5d4037] italic font-cursive text-xl animate-pulse">正在为您提笔作画，感悟田园...</p>
+              <div className="flex flex-col items-center justify-center space-y-4 py-4">
+                <div className="w-12 h-12 border-4 border-amber-200 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-amber-200 italic font-cursive text-lg md:text-xl animate-pulse">正在为您提笔作画，感悟田园...</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                <p className="text-xl text-[#3e2723] leading-relaxed font-serif indent-8">
+              <div>
+                <p className="text-lg md:text-xl lg:text-2xl text-white leading-relaxed md:leading-loose font-serif tracking-wide">
                   {currentNodeId === NodeId.END ? reflection : currentNode.scenario}
                 </p>
                 {currentNodeId === NodeId.END && !isLoadingReflection && (
-                  <div className="pt-4 border-t border-[#5d4037]/10 text-center">
-                    <p className="text-sm text-[#795548] italic">—— 游戏结束，愿你心中常有此番田园意趣</p>
+                  <div className="pt-4 border-t border-white/20 text-center mt-4">
+                    <p className="text-sm md:text-base text-amber-200/80 italic font-cursive">—— 游戏结束，愿你心中常有此番田园意趣</p>
                   </div>
                 )}
               </div>
@@ -121,25 +125,27 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Choice Bar */}
-      <footer className="h-[20%] bg-[#e0d8c3]/50 border-t border-[#5d4037]/10 z-20">
+      {/* Choice Bar - Fixed at Bottom */}
+      <footer className="relative z-30 py-8 md:py-12 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
         {!isLoadingReflection && (
-          <ChoiceBar 
-            choices={currentNode.choices} 
-            onSelect={handleChoice} 
-          />
+          <div className={`transition-all duration-700 delay-200 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <ChoiceBar
+              choices={currentNode.choices}
+              onSelect={handleChoice}
+            />
+          </div>
         )}
       </footer>
 
       {/* Vocabulary Modal */}
-      <VocabularyModal 
-        isOpen={isVocabOpen} 
-        onClose={() => setIsVocabOpen(false)} 
+      <VocabularyModal
+        isOpen={isVocabOpen}
+        onClose={() => setIsVocabOpen(false)}
       />
 
-      {/* Global Ink Animation Layer */}
+      {/* Transition Effect */}
       {isTransitioning && (
-        <div className="fixed inset-0 pointer-events-none z-50 bg-black ink-fade-in opacity-0"></div>
+        <div className="fixed inset-0 pointer-events-none z-50 bg-black/20"></div>
       )}
     </div>
   );
