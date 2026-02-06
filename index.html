@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四时田园·梦回宋代农家</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto+Serif+SC', serif;
+            background-color: #f4f1ea;
+            overflow: hidden;
+        }
+        .font-cursive {
+            font-family: 'Zhi Mang Xing', cursive;
+        }
+        .font-title {
+            font-family: 'Ma Shan+Zheng', cursive;
+        }
+        /* Custom scrollbar for ink theme */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        /* Ink fade animation */
+        .ink-fade-in {
+            animation: inkFade 2s ease-out forwards;
+        }
+        @keyframes inkFade {
+            from { opacity: 0; filter: blur(10px) grayscale(1); transform: scale(1.05); }
+            to { opacity: 1; filter: blur(0) grayscale(0); transform: scale(1); }
+        }
+        .writing-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-[#f4f1ea]">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
